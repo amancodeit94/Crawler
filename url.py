@@ -1,6 +1,6 @@
 
 import mimetypes
-
+import BeautifulSoup as BS4
 import six
 import shlex
 from six.moves.urllib.parse import urlparse, urlunparse
