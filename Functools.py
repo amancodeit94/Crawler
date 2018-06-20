@@ -7,11 +7,7 @@ import sys
 import six
 import copy
 import time
-import json
-import logging
-import traceback
-import functools
-import threading
+
 import tornado.ioloop
 import tornado.httputil
 import tornado.httpclient
@@ -95,18 +91,7 @@ fe
         parsed = urlsplit(url)
       
 
-    def quit(self):
-        '''Quit fetcher'''
-        self._running = False
-        self._quit = True
-        self.ioloop.add_callback(self.ioloop.stop)
-        if hasattr(self, 'xmlrpc_server'):
-            self.xmlrpc_ioloop.add_callback(self.xmlrpc_server.stop)
-            self.xmlrpc_ioloop.add_callback(self.xmlrpc_ioloop.stop)
-
-    def size(self):
-        return self.http_client.size()
-
+   
     def xmlrpc_run(self, port=24444, bind='127.0.0.1', logRequests=False):
         '''Run xmlrpc server'''
         import umsgpack
@@ -131,9 +116,7 @@ fe
             return self._cnt[_time].to_dict(_type)
         application.register_function(dump_counter, 'counter')
 
-        import tornado.wsgi
-        import tornado.ioloop
-        import tornado.httpserver
+        
 
         container = tornado.wsgi.WSGIContainer(application)
         self.xmlrpc_ioloop = tornado.ioloop.IOLoop()
