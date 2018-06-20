@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- encoding: utf-8 -*-
-# vim: set et sw=4 ts=4 sts=4 ff=unix fenc=utf8:
-# Author: Binux<i@binux.me>
-#         http://binux.me
-# Created on 2014-02-07 17:05:11
 
 
 import itertools
@@ -46,16 +40,8 @@ class Project(object):
         self._paused_time = 0
         self._unpause_last_seen = None
 
-        self.update(project_info)
-
-    @property
-    def paused(self):
-        if self.scheduler.FAIL_PAUSE_NUM <= 0:
-            return False
-
-        # unpaused --(last FAIL_PAUSE_NUM task failed)--> paused --(PAUSE_TIME)--> unpause_checking
-        #                         unpaused <--(last UNPAUSE_CHECK_NUM task have success)--|
-        #                             paused <--(last UNPAUSE_CHECK_NUM task no success)--|
+       
+       
         if not self._paused:
             fail_cnt = 0
             for _, task in self.active_tasks:
@@ -126,26 +112,6 @@ class Project(object):
         logger.info('project %s updated, status:%s, paused:%s, %d tasks',
                     self.name, self.db_status, self.paused, len(self.task_queue))
 
-    def on_get_info(self, info):
-        self.waiting_get_info = False
-        self.min_tick = info.get('min_tick', 0)
-        self.retry_delay = info.get('retry_delay', {})
-        self.crawl_config = info.get('crawl_config', {})
-
-    @property
-    def active(self):
-        return self.db_status in ('RUNNING', 'DEBUG')
-
-
-class Scheduler(object):
-    UPDATE_PROJECT_INTERVAL = 5 * 60
-    default_schedule = {
-        'priority': 0,
-        'retries': 3,
-        'exetime': 0,
-        'age': -1,
-        'itag': None,
-    }
     LOOP_LIMIT = 1000
     LOOP_INTERVAL = 0.1
     ACTIVE_TASKS = 100
@@ -177,26 +143,6 @@ class Scheduler(object):
         self.out_queue = out_queue
         self.data_path = data_path
 
-        self._send_buffer = deque()
-        self._quit = False
-        self._exceptions = 0
-        self.projects = dict()
-        self._force_update_project = False
-        self._last_update_project = 0
-        self._last_tick = int(time.time())
-        self._postpone_request = []
-
-        self._cnt = {
-            "5m_time": counter.CounterManager(
-                lambda: counter.TimebaseAverageEventCounter(30, 10)),
-            "5m": counter.CounterManager(
-                lambda: counter.TimebaseAverageWindowCounter(30, 10)),
-            "1h": counter.CounterManager(
-                lambda: counter.TimebaseAverageWindowCounter(60, 60)),
-            "1d": counter.CounterManager(
-                lambda: counter.TimebaseAverageWindowCounter(10 * 60, 24 * 6)),
-            "all": counter.CounterManager(
-                lambda: counter.TotalCounter()),
         }
         self._cnt['1h'].load(os.path.join(self.data_path, 'scheduler.1h'))
         self._cnt['1d'].load(os.path.join(self.data_path, 'scheduler.1d'))
@@ -226,22 +172,7 @@ class Scheduler(object):
         else:
             self.projects[project['name']].update(project)
 
-        project = self.projects[project['name']]
-
-        if project._send_on_get_info:
-            # update project runtime info from processor by sending a _on_get_info
-            # request, result is in status_page.track.save
-            project._send_on_get_info = False
-            self.on_select_task({
-                'taskid': '_on_get_info',
-                'project': project.name,
-                'url': 'data:,_on_get_info',
-                'status': self.taskdb.SUCCESS,
-                'fetch': {
-                    'save': self.get_info_attributes,
-                },
-                'process': {
-                    'callback': '_on_get_info',
+        proj
                 },
             })
 
