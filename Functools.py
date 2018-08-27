@@ -1,7 +1,7 @@
 
 
 from __future__ import unicode_literals
-import beautifulsoup from bs4
+import bs4 import beautifulsoup
 import os
 import sys
 import six
