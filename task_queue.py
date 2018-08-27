@@ -11,37 +11,7 @@ except ImportError:
 from .token_bucket import Bucket
 from six.moves import queue as Queue
 
-logger = logging.getLogger('scheduler')
-
-try:
-    cmp
-except NameError:
-    cmp = lambda x, y: (x > y) - (x < y)
-
-
-class AtomInt(object):
-    __value__ = 0
-    __mutex__ = threading.RLock()
-
-    @classmethod
-    def get_value(cls):
-        cls.__mutex__.acquire()
-        cls.__value__ = cls.__value__ + 1
-        value = cls.__value__
-        cls.__mutex__.release()
-        return value
-
-
-            heappush(self.queue, item)
-            self.queue_dict[item.taskid] = item
-
-    def _get(self, heappop=heapq.heappop):
-        while self.queue:
-            item = heappop(self.queue)
-            if item.taskid is None:
-                continue
-            self.queue_dict.pop(item.taskid, None)
-            return item
+l
         return None
 
     @property
@@ -60,30 +30,3 @@ class AtomInt(object):
 
     def __getitem__(self, taskid):
         return self.queue_dict[taskid]
-
-    def __setitem__(self, taskid, item):
-        assert item.taskid == taskid
-        self.put(item)
-
-    @property
-    def rate(self):
-        return self.bucket.rate
-
-    @rate.setter
-    def rate(self, value):
-        self.bucket.rate = value
-
-    @property
-    def burst(self):
-        re
-            self.priority_queue.put(task)
-        self.mutex.release()
-
-    def _check_processing(self):
-        now = time.time()
-        self.mutex.acquire()
-        while self.p
-        self.mutex.release()
-
-    def put(self, taskid, priority=0, exetime=0):
-        """
