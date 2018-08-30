@@ -5,10 +5,6 @@ import six
 import json
 import chardet
 import lxml.html
-import lxml.etree
-from tblib import Traceback
-from pyquery import PyQuery
-from requests.structures import CaseInsensitiveDict
 from requests import HTTPError
 from pyspider.libs import utils
 
